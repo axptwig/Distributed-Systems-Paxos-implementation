@@ -13,7 +13,7 @@ from event import Event, MessageTypes
 
 node = None
 
-class MyTCPHandler(SocketServer.BaseRequestHandler):
+class NodeTCPHandler(SocketServer.BaseRequestHandler):
     def handle(self):
         global node
         # self.request is the TCP socket connected to the client
@@ -24,13 +24,17 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
             node.receive(self.data)
         node.lock.release()
 
+
 class Node():
     ips = []
     def __init__(self, _id):
         self.id = int(_id)
         self.ip = Node.ips[self.id]
         self.lock = Lock()
-        self.listener = SocketServer.TCPServer(('0.0.0.0', 6000), MyTCPHandler)
+
+        self.udp
+
+        self.listener = SocketServer.TCPServer(('0.0.0.0', 6000), NodeTCPHandler)
         self.listener.node = self
         self.thread = Thread(target = self.listener.serve_forever)
         self.thread.start()
